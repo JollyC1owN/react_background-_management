@@ -18,6 +18,8 @@ class Login extends Component {
 		//获取某一个输入框的值
 		const username = form.getFieldValue("username")
 		const password = form.getFieldValue("password")
+		console.log(values, username, password);
+		
 		alert("发送ajax")
 	}
 	render() {
