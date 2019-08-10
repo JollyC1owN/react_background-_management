@@ -18,7 +18,6 @@ class Login extends Component {
 		//获取某一个输入框的值
 		const username = form.getFieldValue("username")
 		const password = form.getFieldValue("password")
-		console.log(values, username, password)
 		alert("发送ajax")
 	}
 	render() {
@@ -36,7 +35,19 @@ class Login extends Component {
 							{/**getFieldDecorator()()接受的是一个组件标签返回的还是组件标签 */}
 							{/**配置对象：属性名是一些特定的名称  rules */}
 							{getFieldDecorator("username", {
-								rules: []
+								rules: [
+									//声明式验证：使用插件已经定义好的规则进行验证
+									// 1、必须输入
+									// 2、必须大于等于4位
+									// 3、必须小于等于12位
+									// 4、必须是英文、数字、下划线的组成
+									//required必填项,message:提示语句  whitespace:必选时，空格是否会被视为错误
+									{ required: true, whitespace:true ,message: '用户名是必须的' },
+									{ min: 4, message:'用户名不能小于4位'},
+									{ max: 12, message: '用户名不能大于12位' },
+									//+: >=1    * :>=0   ?: 0/1
+									{ pattern: /^[a-zA-Z0-9_]+$/, message:'用户名必须是英文、数字或下划线的组成'},
+								]
 							})(
 								<Input
 									prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
