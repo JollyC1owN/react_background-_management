@@ -87,8 +87,8 @@ const WrapperForm = Form.create()(Login)
 export default WrapperForm   //最终生成的组件名：<Form(Login)/>	
 
 /*
-组件：组件类，本质就是一个构造函数
-组件对象：组件类的实例，也就是构造函数的实例
+组件：组件类，本质就是一个构造函数,定义组件：class组件/	function组件
+组件对象：组件类的实例，也就是构造函数的实例 <App/>
 */
 
 /*
