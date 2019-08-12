@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
-import { Form, Icon, Input, Button ,message} from 'antd';
-import { reqLogin } from  '../../api'
+import { Form, Icon, Input, Button, message } from 'antd';
+import { Redirect } from "react-router-dom"
 
+import { reqLogin } from  '../../api'
 import logo from "./images/logo.png"
 import './login.less';
-
+import storageUtils from "../../utils/storageUtils"
+import memoryUtils from '../../utils/memoryUtils';
 
 const Item = Form.Item
 class Login extends Component {
@@ -32,6 +34,14 @@ class Login extends Component {
 				const result = await  reqLogin(username, password)
 				//登录成功
 				if (result.status === 0) {
+					//将user信息保存到local中    存在local中的只能是文本字符串
+					const user = result.data
+					//存在local中的只能是文本字符串,调用stringify
+					// localStorage.setItem("user_key",JSON.stringify(user))
+					//是保存到本地
+					storageUtils.saveUser(user)
+					// 保存到内存中 --->stores实现
+					memoryUtils.user = user
 					//跳转到管理界面即admin界面
 					this.props.history.replace("/")
 					message.success("登录成功")
@@ -64,9 +74,20 @@ class Login extends Component {
 		}
 	}
 	render() {
+		//在用户登录成功后
+		//读取保存的user，如果存在，直接跳转到管理界面
+		//因为有可能不存在，不存在则返回一个null，不能对null进行parse，所以用一个空对象代替
+		// const user = JSON.parse(localStorage.getItem("user_key") || "{}")
+		const user = memoryUtils.user
+		if (user._id) {
+			//this.props.history.replace("/login")    不能在render中使用这样的写法，这样用在事件的回调函数中进行路由跳转
+			// 在render中用一个组件Redirect ---- 重定向
+			return <Redirect to="/" />				//自动跳转到指定的路由路径
+		}
+
 		let { getFieldDecorator } = this.props.form
 		return (
-			<div className="login">
+			<div className='login'>
 				<div className="login-header">
 					<img src={logo} alt="logo" />
 					<h1>React项目：后台管理系统</h1>
