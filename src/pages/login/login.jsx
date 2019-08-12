@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Form, Icon, Input, Button } from 'antd';
-
+import { Form, Icon, Input, Button ,message} from 'antd';
+import { reqLogin } from  '../../api'
 
 import logo from "./images/logo.png"
 import './login.less';
@@ -8,7 +8,7 @@ import './login.less';
 
 const Item = Form.Item
 class Login extends Component {
-	
+
 	//提交点击事件的回调函数
 	handleSubmit = e => {
 		//阻止form表单中button的提交默认行为
@@ -16,27 +16,36 @@ class Login extends Component {
 		/* 取出输入的相关数据
 		const form = this.props.form
 		获取所有的输入框的值
-		const values = form.getFieldsValue()
+		const values = form.getFieldsValue()   返回的是一个对象    
 		获取某一个输入框的值
-		const username = form.getFieldValue("username")
-		const password = form.getFieldValue("password")
+		const username = form.getFieldValue("username")  传的值与下面的一致
+		const password = form.getFieldValue("password")  传的值与下面的一致
 		console.log(values, username, password); */
-		
+
 		//对表单所有的字段进行统一验证    values是获取到的数据，不用我们自己去获取----对象类型
 		// this.props.form.validateFields((err, values) => {   
-		this.props.form.validateFields((err, { username, password }) => { //---->也可以结构赋值拿到里面的内容
+		this.props.form.validateFields(async (err, { username, password }) => { //---->也可以结构赋值拿到里面的内容
 			if (!err) {
 				// console.log('Received values of form: ', values);
 				// alert(`验证通过发送ajax请求,username=${values.username},password=${values.password}`)
-				alert(`验证通过发送ajax请求,username=${username},password=${password}`)
-			} else { 
+				// alert(`验证通过发送ajax请求,username=${username},password=${password}`)
+				const result = await  reqLogin(username, password)
+				//登录成功
+				if (result.status === 0) {
+					//跳转到管理界面即admin界面
+					this.props.history.replace("/")
+					message.success("登录成功")
+				} else { 				//登录失败
+					message.error(result.msg)
+				}
+			} else {
 				// alert("验证失败")   ----测试的时候书写的
 			}
 		})
 	}
 
 	//对密码进行自定义验证
-	validatePwd = (rule,value,callback) => { 
+	validatePwd = (rule, value, callback) => {
 		// 1、必须输入
 		// 2、必须大于等于4位
 		// 3、必须小于等于12位
@@ -50,7 +59,7 @@ class Login extends Component {
 			callback("密码不能大于12位")
 		} else if (! /^[a-zA-Z0-9_]+$/.test(value)) {
 			callback("密码必须是英文、数字或下划线的组成")
-		} else { 
+		} else {
 			callback()  //验证通过
 		}
 	}
@@ -67,21 +76,21 @@ class Login extends Component {
 					<Form onSubmit={this.handleSubmit} className="login-form">
 						<Item>
 							{/**getFieldDecorator()()接受的是一个组件标签返回的还是组件标签 */}
-							{/**配置对象：属性名是一些特定的名称  rules */}
+							{/**第二个参数为配置对象：属性名是一些特定的名称  options=配置对象的统称      option=选项 */}
 							{getFieldDecorator("username", {
 								initialValue: "", //初始值   在未输入时点击提交就直接就提示用户不能为空
 								rules: [
-						//声明式验证：使用插件已经定义好的规则进行验证
+									//声明式验证：使用插件已经定义好的规则进行验证
 									// 1、必须输入
 									// 2、必须大于等于4位
 									// 3、必须小于等于12位
 									// 4、必须是英文、数字、下划线的组成
 									//required必填项,message:提示语句  whitespace:必选时，空格是否会被视为错误
-									{ required: true, whitespace:true ,message: '用户名是必须的' },
-									{ min: 4, message:'用户名不能小于4位'},
+									{ required: true, whitespace: true, message: '用户名是必须的' },
+									{ min: 4, message: '用户名不能小于4位' },
 									{ max: 12, message: '用户名不能大于12位' },
 									//+: >= 1次    * :>= 0次   ?: 0或1次
-									{ pattern: /^[a-zA-Z0-9_]+$/, message:'用户名必须是英文、数字或下划线的组成'},
+									{ pattern: /^[a-zA-Z0-9_]+$/, message: '用户名必须是英文、数字或下划线的组成' },
 								]
 							})(
 								<Input
@@ -95,7 +104,7 @@ class Login extends Component {
 							{getFieldDecorator("password", {
 								initialValue: "", //初始值  在未输入时点击提交就直接就提示用户不能为空
 								rules: [
-									{ validator: this.validatePwd}
+									{ validator: this.validatePwd }
 								]
 							})(
 								<Input
@@ -120,9 +129,9 @@ Form组件：包含Form标签的组件
 新组件会向form组件传递一个强大的属性：属性名：form，属性值：对象---->{理由有很多方法}
 在浏览器的react中进行查看
  */
-const WrapperForm = Form.create()(Login)
+const WrapperLoginForm = Form.create()(Login)  //返回一个新的组件最终生成的组件名：<Form(Login)/>	
 
-export default WrapperForm   //最终生成的组件名：<Form(Login)/>	
+export default WrapperLoginForm   //最终生成的组件名：<Form(Login)/>	
 
 /*
 组件：组件类，本质就是一个构造函数,定义组件：class组件 /	function组件
@@ -147,4 +156,14 @@ export default WrapperForm   //最终生成的组件名：<Form(Login)/>
 	本质是一个函数
 	函数接受一个组件，返回一个新的组件
 	Form.create()返回的就是一个高阶组件
+*/
+
+/*
+实例对象：简称对象
+函数对象：将函数作为对象使用
+*/
+
+/*
+方法：是特别的属性，属性值是一个函数
+一般属性：属性值不是函数的
 */
