@@ -9,7 +9,7 @@ export const reqLogin = (username, password) => {
 	ajax({
 		method: "POST",
 		url: BASE+"/login",
-		data: { //默认使用json格式的请求体
+		data: { //默认使用json格式的请求体携带参数数据
 			username,    //username:username
 			password     //password:password
 		},
