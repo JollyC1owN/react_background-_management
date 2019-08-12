@@ -3,9 +3,8 @@
 import React, { Component } from 'react'
 import {HashRouter,Switch,Route} from "react-router-dom"
 
-
-import Login from './pages/login/login';
-import Admin from './pages/admin/admin';
+import Login from './pages/login/login.jsx';
+import Admin from './pages/admin/admin.jsx';
 
 
 export default class App extends Component {
