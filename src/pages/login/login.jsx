@@ -73,6 +73,7 @@ class Login extends Component {
 			callback()  //验证通过
 		}
 	}
+	
 	render() {
 		//在用户登录成功后
 		//读取保存的user，如果存在，直接跳转到管理界面
