@@ -36,7 +36,7 @@ export default class Admin extends Component {
 		const user = memoryUtils.user
 		if (!user._id) {
 			//this.props.history.replace("/login")    不能在render中使用这样的写法，这样用在事件的回调函数中进行路由跳转
-			// 在render中用一个组件Redirect ---- 重定向
+			// 在render()中用一个组件Redirect ---- 重定向
 			return <Redirect to="/login" />				//自动跳转到指定的路由路径
 		}
 		return (
