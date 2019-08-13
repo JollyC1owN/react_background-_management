@@ -91,11 +91,19 @@ class LeftNav extends Component {
 				)
 			})
 		} */
-
+		/* 第一次render()之后，执行一次
+			执行异步任务：发ajax请求，启动定时器
+		*/
+	componentDidMount() {
+		
+	}
+	/* 第一次render()之前，执行一次
+	为第一次render()做一些同步的准备工作 */
+	componentWillMount() {
+		// 因为下面要读取openKey，所以要先执行然后在读取---优化：放在componentWillMount中。只执行一次
+		this.menuNodes = this.getMenuNodes2(menuList)
+	}
 	render() {
-		// 因为下面要读取openKey，所以要先执行然后在读取
-		const menuNodes = this.getMenuNodes2(menuList)
-
 		//当前请求的路由路径
 		// 由于当前组件不是用作路由组件来使用，所以this.props是一个空对象{ } ，我们借助路由库提供的 withRouter()来添加路由组件该有的三个属性
 		const selectKey = this.props.location.pathname
@@ -106,13 +114,19 @@ class LeftNav extends Component {
 					<img src={logo} alt="logo" />
 					<h1>硅谷后台</h1>
 				</Link>
+				{/**
+				两者的区别：
+				defaultSelectedKeys:指定默认值后，通过编码更新为其他值，没有更新的效果---总是根据第一次指定的值显示
+				selectedKeys：总是根据最新的key进行显示
+					*/}
 				<Menu
-					defaultSelectedKeys={[selectKey]}  //默认选中的那个
+				
+					selectedKeys={[selectKey]}  //默认选中的那个
 					defaultOpenKeys={[this.openKey]}
 					mode="inline"				//展开和收缩的方式
 					theme="dark"				//主题
 				>
-					{	menuNodes}
+					{	this.menuNodes}
 					{/* <Menu.Item key="/home">
 						<Link to="/home">
 							<Icon type="home" />
