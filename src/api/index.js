@@ -33,6 +33,26 @@ export const reqWeather = (city) => {
 //获取分类列表       axios默认是get请求    
 export const reqCategorys = () => axios(BASE+"/manage/category/list")
 
+
+// 添加分类
+export const reqAddCategory = (categoryName) => axios.post(BASE + "/manage/category/add", { categoryName})
+// 修改分类
+export const reqUpdateCategory = ({ categoryId, categoryName}) => axios.post(BASE + "/manage/category/update", { categoryId,categoryName })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* 	(
  	 ajax({
 		method: "POST",
