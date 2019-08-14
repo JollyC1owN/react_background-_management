@@ -7,6 +7,8 @@ class AddUpdateForm extends Component {
 	static propTypes = {
 		//设置传来的参数的数据类型
 		setForm: PropTypes.func.isRequired,
+		//有可能不传
+		categoryName: PropTypes.string,
 	}
 
 
@@ -17,12 +19,13 @@ class AddUpdateForm extends Component {
 
 	render() {
 		const { getFieldDecorator } = this.props.form
+		const { categoryName} =this.props
 		return (
 			<div>
 				<Form>
 					<Item>
 						{getFieldDecorator("categoryName", {
-							initialValue: "", //初始值
+							initialValue: categoryName || "", //初始值
 							rules: [
 								{ required: true, whitespace: true, message: '分类名称是必须输入' }
 							]
