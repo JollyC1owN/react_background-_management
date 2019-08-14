@@ -35,6 +35,7 @@ class LeftNav extends Component {
 				if (cItem) { 
 					this.openKey = item.key
 				}
+				//也有可能添加<SubMenu>
 				pre.push(
 					<SubMenu
 						key={item.key}
@@ -53,7 +54,7 @@ class LeftNav extends Component {
 					</SubMenu>
 				)
 			}
-			//也有可能添加<SubMenu>
+			
 			return pre
 		}, [])
 	}
@@ -97,7 +98,9 @@ class LeftNav extends Component {
 	componentDidMount() {
 		
 	}
+
 	/* 第一次render()之前，执行一次
+	同步任务
 	为第一次render()做一些同步的准备工作 */
 	componentWillMount() {
 		// 因为下面要读取openKey，所以要先执行然后在读取---优化：放在componentWillMount中。只执行一次
