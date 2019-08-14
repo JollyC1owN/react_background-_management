@@ -9,7 +9,7 @@ import './index.less';
 import memoryUtils from '../../utils/memoryUtils';
 import storageUtils from '../../utils/storageUtils';
 import menuList from '../../config/menuConfig';
-import { formateDate } from '../../utils/dateUtils';
+import { formateDate } from '../../utils/dateUtils';   
 import { reqWeather } from '../../api';
 import LinkButton from "../../components/link-button"
 
@@ -21,7 +21,17 @@ class Header extends Component {
 		weather: ""   //天气文本
 	}
 
+	/* 自定义的获取天气信息的函数 */
+	getWeather = async () => {
+		const { dayPictureUrl, weather } = await reqWeather("北京")
+		this.setState({
+			dayPictureUrl,
+			weather
+		})
+	}
+
 	componentDidMount() {
+		
 		//启动循环定时器
 		this.timerId = setInterval(() => {
 			this.setState({
@@ -33,7 +43,7 @@ class Header extends Component {
 		// 发送jsonp请求，获取天气信息显示
 		this.getWeather()
 	}
-
+	//在将要卸载组件的时候清除定时器
 	componentWillUnmount() {
 		clearInterval(this.timerId)
 	}
@@ -78,11 +88,9 @@ class Header extends Component {
 		return title
 	}
 
-	/* 自定义的获取天气信息的函数 */
-	getWeather = async() => { 
-		const {dayPictureUrl, weather } = await reqWeather("北京")
-		this.setState({dayPictureUrl, weather })
-	}
+
+
+
 	render() {
 		const { currentTime, dayPictureUrl, weather } = this.state
 		const user = memoryUtils.user
