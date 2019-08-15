@@ -1,7 +1,7 @@
 /* 此Form组件是添加或者修改框的表单 */
 import React, { Component } from 'react'
 import PropTypes from "prop-types"
-import { Form, Input, message } from 'antd';
+import { Form, Input} from 'antd';
 const Item = Form.Item
 class AddUpdateForm extends Component {
 	static propTypes = {
