@@ -39,7 +39,13 @@ export const reqAddCategory = (categoryName) => axios.post(BASE + "/manage/categ
 // 修改分类
 export const reqUpdateCategory = ({ categoryId, categoryName}) => axios.post(BASE + "/manage/category/update", { categoryId,categoryName })
 
-
+//获取商品分页列表     params参数只能拼在路径里面不能通过配置指定    下面的写法是query参数，只不过配置的名字是params  
+export const reqProducts = ( pageNum,pageSize) => ajax(BASE + "/manage/product/list", { 
+	params: { //指定的是包含所有query参数的对象
+		pageNum,
+		pageSize
+	}
+})
 
 
 
