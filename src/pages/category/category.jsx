@@ -66,10 +66,8 @@ export default class Category extends Component {
     // 进行表单验证
     this.form.validateFields(async (err, values) => {
       if (!err) {
-
         // 验证通过后，得到输入数据
         const { categoryName } = values
-
         // 判断是添加操作还是修改操作
         //获取状态数据 ----依据状态值来判断是什么操作
         const { showStatus } = this.state
@@ -87,14 +85,14 @@ export default class Category extends Component {
         // 无论是否成功都修改显示框的状态，让他消失
         this.setState({ showStatus: 0 })
 
-        const action =showStatus  ===1 ? "添加" : "修改"
+        const action = showStatus === 1 ? "添加" : "修改"
         // 根据响应结果，做不同的处理
         if (result.status === 0) { //成功
           // 重新获取分类信息
           this.getCategory()
-          message.success(action+"分类成功")
+          message.success(action + "分类成功")
         } else { //失败
-          message.error(action+"分类失败")
+          message.error(action + "分类失败")
         }
       }
     })
@@ -102,7 +100,7 @@ export default class Category extends Component {
   }
   //修改、添加框点击cancel后的回调 ----修改showStatus的值为0；让弹出框消失 
   handleCancel = () => {
-    this.form.resetFields()   //重置输入的数据---变成了初始值
+    this.form.resetFields()   //重置输入的数据---变成了初始值  
     this.setState({
       showStatus: 0
     })
@@ -128,7 +126,7 @@ export default class Category extends Component {
     //card  右上角-  +添加  -结构
     const extra = (
       <Button type="primary" onClick={() => {
-      this.category = null
+        this.category = null
         this.setState({ showStatus: 1 })
       }}>
         <Icon type="plus"></Icon>

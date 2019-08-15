@@ -146,7 +146,7 @@ class Login extends Component {
 	}
 }
 /* 
-利用Form.create()包装Form组件生成一个新的组件
+利用Form.create()包装Form组件生成一个新的组件    使用这个包装方法，组件里面必须包含Form标签
 Form组件：包含Form标签的组件
 新组件会向form组件传递一个强大的属性：属性名：form，属性值：对象---->{理由有很多方法}
 在浏览器的react中进行查看
