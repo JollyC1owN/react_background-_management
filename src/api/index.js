@@ -46,6 +46,30 @@ export const reqProducts = ( pageNum,pageSize) => ajax(BASE + "/manage/product/l
 		pageSize
 	}
 })
+// 根据Name/desc搜索产品分页列表
+export const reqSearchProducts = (
+	{ 
+		pageNum,
+		pageSize,
+		searchName,
+		searchType     //他的值只能是productName或者是productDesc
+	}
+) => ajax(BASE + "/manage/product/search", {
+	params: {
+		pageNum,
+		pageSize,
+		[searchType]:searchName //无法确定是根据商品描述还是商品名称搜索所以用searchType这个变量来代替
+	}
+})
+
+// 对商品进行上架/下架处理
+export const reqUpdateStatus = (productId,status) => ajax(BASE + "/manage/product/updateStatus", {
+	method: "POST",
+	data: {
+		productId,
+		status
+	}
+})
 
 
 
