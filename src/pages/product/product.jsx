@@ -13,8 +13,8 @@ const Option = Select.Option
 export default class Product extends Component {
   state = {
     loading: false,
-    products: [],      //商品的列表
-    total:0     //商品的总数量
+    products: [],      //当前页的商品的列表
+    total:0     //商品的总数量    ---初始为0
   }
 
   initColumns = () => {
@@ -64,8 +64,10 @@ export default class Product extends Component {
   }
   // 异步获取指定页码商品列表显示
   getProducts = async (pageNum) => {
+    this.setState({loading:true})
     //发送请求获取数据
-    const result =await reqProducts(pageNum, 2)
+    const result = await reqProducts(pageNum, 2)
+    this.setState({loading:false})
     if (result.status === 0) { 
       const { total, list } = result.data
       //更新状态
@@ -107,7 +109,8 @@ export default class Product extends Component {
           loading={loading}
           columns={this.columns}
           dataSource={products}
-          pagination={{total, defaultPageSize: 2, showQuickJumper: true,  onChange:this.getProducts}} //当点击页码时，自动调用getProducts
+          //当点击页码时，自动调用getProducts
+          pagination={{total, defaultPageSize: 2, showQuickJumper: true,  onChange:this.getProducts}} 
         ></Table>
       </Card>
     )
