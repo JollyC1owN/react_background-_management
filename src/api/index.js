@@ -53,12 +53,12 @@ export const reqSearchProducts = (
 		pageSize,
 		searchName,
 		searchType     //他的值只能是productName或者是productDesc
-	}
-) => ajax(BASE + "/manage/product/search", {
+	}) => ajax(BASE + "/manage/product/search", {
 	params: {
 		pageNum,
 		pageSize,
-		[searchType]:searchName //无法确定是根据商品描述还是商品名称搜索所以用searchType这个变量来代替
+		[searchType]: searchName //无法确定是根据商品描述还是商品名称搜索所以用searchType这个变量来代替
+		//用一个[]来包裹这个变量、所以这个searchType就是对应的值，而不是写死的
 	}
 })
 
@@ -68,6 +68,21 @@ export const reqUpdateStatus = (productId,status) => ajax(BASE + "/manage/produc
 	data: {
 		productId,
 		status
+	}
+})
+
+
+//根据商品ID获取商品
+export const reqProductInfo = (productId) => ajax(BASE + "/manage/product/info", {
+	params: {
+		productId
+	}
+})
+
+//根据商品的分类ID获取分类的名称
+export const reqCategory = (categoryId) => ajax(BASE + "/manage/category/info", {
+	params: {
+		categoryId
 	}
 })
 

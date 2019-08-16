@@ -31,7 +31,7 @@ class LeftNav extends Component {
 			} else {
 				//判断当前key是否是我需要的openKey
 				//查找item的所有children中的cItem的key，看是否有一个跟请求的path匹配
-				const cItem = item.children.find(cItem => cItem.key === path)
+				const cItem = item.children.find(cItem => path.indexOf(cItem.key) ===0)
 				if (cItem) { 
 					this.openKey = item.key
 				}
@@ -109,8 +109,11 @@ class LeftNav extends Component {
 	render() {
 		//当前请求的路由路径
 		// 由于当前组件不是用作路由组件来使用，所以this.props是一个空对象{ } ，我们借助路由库提供的 withRouter()来添加路由组件该有的三个属性
-		const selectKey = this.props.location.pathname
+		let path = this.props.location.pathname
 		// console.log(this.props);
+		if (path.indexOf("/product/") === 0) { 
+			path="/product"
+		}
 		return (
 			<div className="left-nav" >
 				<Link className="left-nav-link" to="/home">
@@ -123,8 +126,7 @@ class LeftNav extends Component {
 				selectedKeys：总是根据最新的key进行显示
 					*/}
 				<Menu
-				
-					selectedKeys={[selectKey]}  //默认选中的那个
+					selectedKeys={[path]}  //默认选中的那个
 					defaultOpenKeys={[this.openKey]}
 					mode="inline"				//展开和收缩的方式
 					theme="dark"				//主题
