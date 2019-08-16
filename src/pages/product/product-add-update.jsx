@@ -12,7 +12,8 @@ import {
 } from "antd"
 import LinkButton from "../../components/link-button"
 import { reqCategorys } from "../../api"
-
+import PicturesWall from "./prctures-wall"
+import RichTextEditor from "./rich-text-editor"
 
 const Item = Form.Item
 const Option = Select.Option
@@ -20,7 +21,10 @@ const Option = Select.Option
 
 
 class ProductAddUpdate extends Component {
-
+  constructor(props) {
+    super(props)
+    this.pwRef = React.createRef()
+  }
   state = {
     categoryName: []  //商品的类名数组  在下面的下拉框中使用
   }
@@ -33,18 +37,31 @@ class ProductAddUpdate extends Component {
       this.setState({
         categoryName: result.data
       })
+      // imgs = 
     }
   }
   // Form表单的提交事件
   handleSubmit = (event) => {
     // 阻止默认行为
     event.preventDefault()
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        const { name, desc, price, categoryId } = values
+
+        const imgs = this.pwRef.current.getImgs()
+        console.log(name, desc, price, categoryId, imgs);
+      }
+    })
   }
   // 发送请求，请求所有分类
   componentDidMount() {
     this.getCategory()
   }
-
+  componentWillMount() {
+    const product = this.props.location.state
+    this.product = product || {}
+    this.isUpdate = !!this.product._id
+  }
   render() {
     const { categoryName } = this.state
     // 拿到Form表单中属性form中的方法
@@ -55,21 +72,21 @@ class ProductAddUpdate extends Component {
         <LinkButton onClick={() => this.props.history.goBack()}>
           <Icon type="arrow-left" />
         </LinkButton>
-        <span>添加商品</span>
+        <span>{this.isUpdate ? "修改" : "添加"}商品</span>
       </span>
     )
     // 设置input框与字体在一行内显示,在antd中一行总共分成24份
     const formItemLayout = {
-      labelCol: { span: 2 },
+      labelCol: { span: 3 },
       wrapperCol: { span: 8 },
     }
 
     return (
       <Card title={title}>
         <Form {...formItemLayout} onSubmit={this.handleSubmit}>
-          <Item label="商品名称">
+          <Item label="商品名称：">
             {getFieldDecorator("name", {
-              initialValue: '',
+              initialValue: this.product.name,
               rules: [
                 { required: true, message: "必须输入商品名称" }
               ]
@@ -78,9 +95,9 @@ class ProductAddUpdate extends Component {
             )
             }
           </Item>
-          <Item label="商品描述">
+          <Item label="商品描述：">
             {getFieldDecorator("desc", {
-              initialValue: '',
+              initialValue: this.product.desc,
               rules: [
                 { required: true, message: "必须输入商品描述" }
               ]
@@ -89,9 +106,9 @@ class ProductAddUpdate extends Component {
             )
             }
           </Item>
-          <Item label="商品价格">
+          <Item label="商品价格：">
             {getFieldDecorator("price", {
-              initialValue: '',
+              initialValue: this.product.price,
               rules: [
                 { required: true, message: "必须输入商品价格" }
               ]
@@ -100,9 +117,9 @@ class ProductAddUpdate extends Component {
             )
             }
           </Item>
-          <Item label="商品分类">
+          <Item label="商品分类：">
             {getFieldDecorator("categoryId", {
-              initialValue: '',
+              initialValue: this.product.categoryId || "",
               rules: [
                 { required: true, message: "必须选择商品分类" }
               ]
@@ -117,6 +134,12 @@ class ProductAddUpdate extends Component {
               </Select>
             )
             }
+          </Item>
+          <Item label="商品图片：">
+            <PicturesWall ref={this.pwRef} imgs={this.product.imgs} />
+          </Item>
+          <Item label="商品详情：">
+            <RichTextEditor/> 
           </Item>
           <Item>
             {/* 在antd中：Form中的button不具备点击提交的属性，必须加上 htmlType="submit"这样就有了提交的功能*/}

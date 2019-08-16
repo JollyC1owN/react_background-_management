@@ -87,6 +87,10 @@ export const reqCategory = (categoryId) => ajax(BASE + "/manage/category/info", 
 })
 
 
+//删除图片
+export const reqRemoveImg = (name) => ajax.post(BASE + "/manage/img/delete", {
+	name
+})
 
 
 
