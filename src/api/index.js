@@ -93,7 +93,11 @@ export const reqRemoveImg = (name) => ajax.post(BASE + "/manage/img/delete", {
 })
 
 
-
+//添加或者修改商品的请求 
+export const reqAddUpdateProduct = (product) => ajax.post(
+	BASE + "/manage/product/" + (product._id ? "update" : "add"),
+	product
+)
 
 
 

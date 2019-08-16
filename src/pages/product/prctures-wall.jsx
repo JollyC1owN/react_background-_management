@@ -69,8 +69,6 @@ export default class PicturesWall extends Component {
    
    componentWillMount() {
      const imgs = this.props.imgs
-     console.log(imgs);
-     
      if (imgs && imgs.length > 0) {
        /* 
       {
@@ -104,11 +102,11 @@ export default class PicturesWall extends Component {
           action="/manage/img/upload"
           listType="picture-card"
           fileList={fileList}
-          name="image"
+          name="image"  //图片文件对应参数名
           onPreview={this.handlePreview}
           onChange={this.handleChange}
         >
-          {fileList.length >= 8 ? null : uploadButton}
+          {fileList.length >= 10 ? null : uploadButton}
         </Upload>
         <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
           <img alt="example" style={{ width: '100%' }} src={previewImage} />

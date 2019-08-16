@@ -8,10 +8,11 @@ import {
   Input,
   Select,
   Button,
-  Icon
+  Icon,
+  message
 } from "antd"
 import LinkButton from "../../components/link-button"
-import { reqCategorys } from "../../api"
+import { reqCategorys ,reqAddUpdateProduct} from "../../api"
 import PicturesWall from "./prctures-wall"
 import RichTextEditor from "./rich-text-editor"
 
@@ -24,6 +25,7 @@ class ProductAddUpdate extends Component {
   constructor(props) {
     super(props)
     this.pwRef = React.createRef()
+    this.editorRef = React.createRef()
   }
   state = {
     categoryName: []  //商品的类名数组  在下面的下拉框中使用
@@ -37,19 +39,32 @@ class ProductAddUpdate extends Component {
       this.setState({
         categoryName: result.data
       })
-      // imgs = 
     }
   }
   // Form表单的提交事件
   handleSubmit = (event) => {
     // 阻止默认行为
     event.preventDefault()
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFields(async (err, values) => {
       if (!err) {
         const { name, desc, price, categoryId } = values
-
+        //获取图片名称数组
         const imgs = this.pwRef.current.getImgs()
-        console.log(name, desc, price, categoryId, imgs);
+        // 获取detail的标签体内容
+        const detail = this.editorRef.current.getDetail()
+        console.log(name, desc, price, categoryId, imgs, detail);
+        let product = { name, desc, price, categoryId, imgs, detail }
+        if (this.isUpdate) { 
+          product._id = this.product._id
+        }
+        //发请求
+        const result = await reqAddUpdateProduct(product)
+        if (result.status === 0) {
+          message.success(`${this.isUpdate ? "修改" : "添加"}商品成功`)
+          this.props.history.replace("/product")
+        } else { 
+          message.error(result.msg)
+        }
       }
     })
   }
@@ -135,18 +150,18 @@ class ProductAddUpdate extends Component {
             )
             }
           </Item>
-          <Item label="商品图片：">
+          <Item label="商品图片：" wrapperCol={{ span: 10 } }>
             <PicturesWall ref={this.pwRef} imgs={this.product.imgs} />
           </Item>
-          <Item label="商品详情：">
-            <RichTextEditor/> 
+          <Item label="商品详情："  wrapperCol={{ span: 20 } } >
+            <RichTextEditor detail={this.product.detail} ref={this.editorRef} /> 
           </Item>
-          <Item>
-            {/* 在antd中：Form中的button不具备点击提交的属性，必须加上 htmlType="submit"这样就有了提交的功能*/}
-            <Button type="primary" htmlType="submit">提交</Button>
-          </Item>
+        <Item>
+          {/* 在antd中：Form中的button不具备点击提交的属性，必须加上 htmlType="submit"这样就有了提交的功能*/}
+          <Button type="primary" htmlType="submit">提交</Button>
+        </Item>
         </Form>
-      </Card>
+      </Card >
     )
   }
 }
