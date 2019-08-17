@@ -40,7 +40,7 @@ export default class Admin extends Component {
 			return <Redirect to="/login" />				//自动跳转到指定的路由路径
 		}
 		return (
-			<Layout style={{ height: "100%" }}>
+			<Layout style={{ minHeight: "100%" }}>
 				<Sider>
 					<LeftNav />
 				</Sider>

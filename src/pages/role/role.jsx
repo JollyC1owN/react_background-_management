@@ -11,13 +11,18 @@ import {
 } from "antd"
 import { formateDate } from "../../utils/dateUtils"
 import LinkButton from "../../components/link-button"
-import { reqUsersRoleList,reqAddRole } from '../../api';
+import { reqUsersRoleList,reqAddRole,reqUpdateRole } from '../../api';
 import AddForm from "./add-form"
 import UpdateRole from './set-form';
-
+import memoryUtils from "../../utils/memoryUtils"
 
 
 export default class Role extends Component {
+
+  constructor(props) { 
+    super(props)
+    this.roleRef = React.createRef()
+  }
 
   state = {
     loading: true,
@@ -52,7 +57,8 @@ export default class Role extends Component {
       },
       {
         title: '操作',
-        render: (role) => <LinkButton onClick={(role) => this.showRoles(role)}>设置权限</LinkButton>
+                                      //在点击里面的函数的形参不要传role！！！！！！内部自动传入              
+        render: (role) => <LinkButton onClick={() => this.showRoles(role)}>设置权限</LinkButton>
       },
     ]
   }
@@ -79,6 +85,7 @@ export default class Role extends Component {
   addRole = ()=>{
     this.form.validateFields(async (err, vlaues) => { 
       if (!err) { 
+        this.form.resetFields() //初始化输入框里的内容
         this.setState({isShowAdd: false})
         const { roleName } = vlaues
         const result = await reqAddRole(roleName)
@@ -91,8 +98,25 @@ export default class Role extends Component {
   }
 
   // 修改用户角色权限
-  updateRole = () => { 
-
+  updateRole = async () => { 
+    this.setState({
+      isShowAuth: false
+    })
+    //拿到当前点击的那一个的数据对象的role ---在点击的时候就已经保存在了this中
+    const role = this.role
+    //调用子组件中的方法，拿到选中的复选框的选择
+    role.menus = this.roleRef.current.getRoles()
+    // 获取当前的设置时间
+    role.auth_time = Date.now()
+    // 在内存中拿到当前登录的用户
+    role.auth_name = memoryUtils.user.username
+    const result = await reqUpdateRole(role)
+    if (result.status === 0) {
+      message.success("设置权限成功")
+      this.getRoles()
+    } else { 
+      message.error("设置权限失败")
+    }
   }
 
 
@@ -139,7 +163,7 @@ export default class Role extends Component {
             this.setState({ isShowAuth: false })
           }}
         >
-        <UpdateRole/>
+          <UpdateRole role={this.role} ref={this.roleRef}/>
         </Modal>
       </Card>
     )

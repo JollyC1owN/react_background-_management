@@ -7,54 +7,72 @@ import "./index.less"
 import logo from "../../assets/images/logo.png"
 // 引入导航菜单的配置
 import menuList from '../../config/menuConfig';
-
+import memoryUtils from "../../utils/memoryUtils"
 
 
 const { SubMenu } = Menu;
 class LeftNav extends Component {
-
-	/* reduce方法实现 */
+	hasAuth = (item) => { 
+		const user = memoryUtils.user
+    const menus = user.role.menus
+    /* 
+    1. 如果当前是admin
+    2. item是一个公开的
+    3. item的key在当前用户对应的menus中
+    */
+    if (user.username === 'admin' || item.isPublic || menus.indexOf(item.key)!=-1) {
+      return true
+    } else if (item.children) {
+      // 4. 某个子item的key在menus中
+      const cItem = item.children.find(cItem => menus.indexOf(cItem.key) != -1)
+      return !!cItem
+    }
+    return false
+	}
+	/* reduce		方法实现 */
 	getMenuNodes2 = (menuList) => {
 		//请求的路径
 		const path = this.props.location.pathname
 		return menuList.reduce((pre, item) => {
-			//可能想pre中添加 <Menu.Item>
-			if (!item.children) {
-				pre.push(
-					<Menu.Item key={item.key}>
-						<Link to={item.key}>
-							<Icon type={item.icon} />
-							<span>{item.title}</span>
-						</Link>
-					</Menu.Item>
-				)
-			} else {
-				//判断当前key是否是我需要的openKey
-				//查找item的所有children中的cItem的key，看是否有一个跟请求的path匹配
-				const cItem = item.children.find(cItem => path.indexOf(cItem.key) ===0)
-				if (cItem) { 
-					this.openKey = item.key
-				}
-				//也有可能添加<SubMenu>
-				pre.push(
-					<SubMenu
-						key={item.key}
-						title={
-							<span>
+			if (this.hasAuth(item)) {
+				//可能想pre中添加 <Menu.Item>
+				if (!item.children) {
+					pre.push(
+						<Menu.Item key={item.key}>
+							<Link to={item.key}>
 								<Icon type={item.icon} />
 								<span>{item.title}</span>
-							</span>
-						}
-					>
-						{
-							//通过递归的方式再创建下面的item
-							this.getMenuNodes2(item.children)
-							
-						}
-					</SubMenu>
-				)
+							</Link>
+						</Menu.Item>
+					)
+				} else {
+					//判断当前key是否是我需要的openKey
+					//查找item的所有children中的cItem的key，看是否有一个跟请求的path匹配
+					const cItem = item.children.find(cItem => path.indexOf(cItem.key) === 0)
+					if (cItem) {
+						this.openKey = item.key
+					}
+					//也有可能添加<SubMenu>
+					pre.push(
+						<SubMenu
+							key={item.key}
+							title={
+								<span>
+									<Icon type={item.icon} />
+									<span>{item.title}</span>
+								</span>
+							}
+						>
+							{
+								//通过递归的方式再创建下面的item
+								this.getMenuNodes2(item.children)
+
+							}
+						</SubMenu>
+					)
+				}
 			}
-			
+
 			return pre
 		}, [])
 	}
@@ -92,11 +110,11 @@ class LeftNav extends Component {
 				)
 			})
 		} */
-		/* 第一次render()之后，执行一次
-			执行异步任务：发ajax请求，启动定时器
-		*/
+	/* 第一次render()之后，执行一次
+		执行异步任务：发ajax请求，启动定时器
+	*/
 	componentDidMount() {
-		
+
 	}
 
 	/* 第一次render()之前，执行一次
@@ -111,8 +129,8 @@ class LeftNav extends Component {
 		// 由于当前组件不是用作路由组件来使用，所以this.props是一个空对象{ } ，我们借助路由库提供的 withRouter()来添加路由组件该有的三个属性
 		let path = this.props.location.pathname
 		// console.log(this.props);
-		if (path.indexOf("/product/") === 0) { 
-			path="/product"
+		if (path.indexOf("/product/") === 0) {
+			path = "/product"
 		}
 		return (
 			<div className="left-nav" >
@@ -131,7 +149,7 @@ class LeftNav extends Component {
 					mode="inline"				//展开和收缩的方式
 					theme="dark"				//主题
 				>
-					{	this.menuNodes}
+					{this.menuNodes}
 					{/* <Menu.Item key="/home">
 						<Link to="/home">
 							<Icon type="home" />

@@ -110,6 +110,25 @@ export const reqAddRole = (roleName) => ajax.post(BASE + "/manage/role/add", {
 })
 
 
+//给角色设置权限
+export const reqUpdateRole = (role) => ajax.post(BASE + "/manage/role/update", role)
+
+
+
+// 获取所有用户信息
+export const reqUsers = ()=>ajax("/manage/user/list")
+
+
+//添加或者修改用户
+export const reqAddUpdateUser = (user) => ajax.post(BASE+"manage/user/"+(user._id ? "update" : "add"),user)
+
+
+// 删除指定用户
+export const reqDeleteUser = (userId) => ajax.post(BASE + '/manage/user/delete', {
+  userId
+})
+
+
 
 
 /* 	(

@@ -1,6 +1,6 @@
 /* 添加用户角色的弹出框 */
 import React, { Component } from 'react'
-import { Form, Input, message } from "antd"
+import { Form, Input } from "antd"
 import PropTypes from 'prop-types'
 
 const Item = Form.Item
