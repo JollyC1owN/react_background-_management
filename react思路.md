@@ -5,18 +5,19 @@ day01
 ### form组件的使用
 
 1. const wrapperForm = Form.create()(login)--> 使login组件具有form属性
-2. getFieldDecorator ( 'Name' ,{配置的对象} )-->form下的方法  可以设置初始值和配置对象  将输入框和此方法包裹在一个{}中 经过 getFieldDecorator 包装的控件，表单控件会自动添加 value onChange，数据同步将被 Form 接管
+2. getFieldDecorator ( 'Name' ,{配置的对象} )-->form下的方法  可以设置初始值和配置对象  将输入框和此方法包裹在一个{}中 经过 getFieldDecorator 包装的控件，表单控件会自动添加 value onChange，数据同步将被 Form 接管,form对象会对所有的输入组件进行实时的监听，保存它们的value值  
 3. getFieldValue 获取输入框的值  getFieldsValue 获取所有输入框的值。
 
-# dayo2
+# day02
 
 ### 前台表单验证
 
-1. 对用户名使用自带的验证规则
-   1. 配置对象中的  rules:[] 内写antd的校验规则。
+1. 对用户名使用声明式的验证规则
+    声明式：应用别人规定好的规则进行编写
+   1. 配置对象中的  rules:[] 内写antd的校验规则。---参考文档
 
-2. 对密码使用自定义校验规则 validator
-
+2. 对密码使用自定义校验规则 validator ---这个是关键字，他的值是一个自定义方法
+ 
    1. rules:[] 内写好{validator:this.validatePwd} 告诉人家 我要写自定义校验规则并且是一个函数
    2. validatePwd=(rule, value, callback)=>{判断并且写规则} 并且callback必须被调用 //callback就是提示信息
    3. 点击登录时进行表单统一验证
