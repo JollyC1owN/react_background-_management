@@ -52,7 +52,7 @@
     6). 新的同事: 克隆仓库
         git clone url
         git checkout -b dev origin/dev
-        git pull origin dev
+        git push origin dev
     7). 如果远程修改了
         git pull origin dev
     8). 如何得到后面新增的远程分支
@@ -81,12 +81,16 @@
 ## 8. 引入路由
     下载包: react-router-dom
     拆分应用路由:
-      Login: 登陆
-      Admin: 后台管理界面
+        Login: 登陆
+        Admin: 后台管理界面
     注册路由:
-      <BrowserRouter> / <HashRouter>
-      <Switch>
-      <Route path='' component={}/>
+        <BrowserRouter> / <HashRouter>
+        <Switch>
+        <Route path='' component={}/>
+    路由匹配
+        逐级路由匹配: 先匹配上一个1级路由==> 进入这个路由的组件==> 匹配其内部1个子路由
+        只要匹配上一个, 后面的不看了
+        默认是模糊(只匹配前面部分)
 
 ## 9. Login的静态组件
     1). 自定义了一部分样式布局
@@ -99,13 +103,14 @@
 ## 10. 高阶函数与高阶组件
     1). 高阶函数
         定义: 接收的参数是函数或者返回值是函数
-        常见的: 数组遍历相关的方法 / 定时器 / Promise / 高阶组件 / fn.bind(obj)()
+        常见的: 数组遍历相关的方法 / 定时器 / bind() / Promise / Form.create()(组件)
         作用: 实现一个更加强大, 动态的功能
-    
     2). 高阶组件: 
         本质是一个函数
         函数接收一个组件, 返回一个新的组件
-        Form.create()返回的就是一个高阶组件   
+        常见的高阶组件:
+            Form.create()返回的就是一个高阶组件 :  Form.create()(组件) 返回一个新的组件
+            connect()返回的就是一个高阶组件: connect()(UI组件)返回容器组件
     
     3). 高阶组件与高阶函数的关系
         高阶组件是特别的高阶函数
@@ -121,7 +126,7 @@
         form.getFieldDecorator('标识名称', {initialValue: 初始值, rules: []})(<Input/>)包装表单项标签
         form.getFieldsValue(): 得到包含所有输入数据的对象
         form.getFieldValue(id): 根据标识得到对应字段输入的数据
-    
+     
     3). 前台表单验证
         a. 声明式实时表单验证:
             form.getFieldDecorator('标识名称', {rules: [{min: 4, message: '错误提示信息'}]})(<Input/>)
@@ -134,7 +139,6 @@
             form.validateFields((error, values) => {
               if(!error) {通过了验证, 发送ajax请求}
             })
-
 
 # day02
 ## 1. 后台应用
@@ -258,3 +262,138 @@
             接收到请求处理产生结果数据后, 返回一个函数调用的js代码, 并将结果数据作为实参传入函数调用
         浏览器端:
             收到响应自动执行函数调用的js代码, 也就执行了提前定义好的回调函数, 并得到了需要的结果数据
+
+# day04
+## 1. Category组件使用antd组件构建分类列表界面
+    Card
+    Table
+    Button
+    Icon
+    Modal
+
+## 2. 相关接口请求函数
+    获取全部分类列表
+    添加分类
+    更新分类
+
+## 3. 异步显示分类列表    
+    设计分类列表的状态: categorys
+    异步获取分类列表: componentDidMount(){}
+    更新状态显示
+
+## 4. 添加分类
+    1). 界面
+        antd组件: Modal, Form, Input
+        显示/隐藏: showStatus状态为1/0
+        
+    2). 功能
+        父组(Category)件得到子组件(CategoryForm)的数据(form)
+        调用添加分类的接口
+        重新获取分类列表
+
+## 5. 更新分类
+    1). 界面
+        antd组件: Modal, Form, Input
+        显示/隐藏: showStatus状态为2/0
+        
+    2). 功能
+        父组(Category)件得到子组件(CategoryForm)的数据(form)
+        调用更新分类的接口
+        重新获取分类列表
+    3). 重要问题
+        描述: <Input>指定initialValue后, 如果输入改变了, 再指定新的initialValue, 默认显示输入的值
+        解决: 在关闭Modal时, 进行表单项重置: form.resetFields()
+
+
+## 6. Product整体路由
+    1). 配置子路由: 
+        ProductHome / ProductDetail / ProductAddUpdate
+        <Route> / <Switch> / <Redirect>
+    
+    2). 匹配路由的逻辑:
+        默认: 逐层路由不完全匹配   <Route path='/product' component={ProductHome}/>
+        exact属性: 完全匹配
+
+## 7. 分页实现技术(2种)
+    1). 前台分页
+        请求获取数据: 一次获取所有数据, 翻页时不需要再发请求
+        请求接口: 
+            不需要指定请求参数: 页码(pageNum)和每页数量(pageSize)
+            响应数据: 所有数据的数组
+    
+    2). 基于后台的分页
+        请求获取数据: 每次只获取当前页的数据, 翻页时要发请求
+        请求接口: 
+            需要指定请求参数: 页码(pageNum)和每页数量(pageSize)
+            响应数据: 当前页数据的数组 + 总记录数(total)
+    
+    3). 如何选择?
+        基本根据数据多少来选择
+
+## 8. ProductHome组件
+    1). 分页显示
+       界面: <Card> / <Table> / Select / Icon / Input / Button
+       状态: products / total
+       接口请求函数需要的数据: pageNum, pageSize
+       异步获取第一页数据显示
+           调用分页的接口请求函数, 获取到当前页的products和总记录数total
+           更新状态: products / total
+       翻页:
+           绑定翻页的监听, 监听回调需要得到pageNum
+           异步获取指定页码的数据显示 
+
+# day05
+## 1. ProductHome组件
+    2). 搜索分页
+       接口请求函数需要的数据: 
+           pageSize: 每页的条目数
+           pageNum: 当前请求第几页 (从1开始)
+           productDesc / productName: searchName 根据商品描述/名称搜索
+       状态:  searchType / searchName  / 在用户操作时实时收集数据
+       异步搜索显示分页列表
+           如果searchName有值, 调用搜索的接口请求函数获取数据并更新状态
+           
+    3). 更新商品的状态
+       初始显示: 根据product的status属性来显示  status = 1/2
+       点击切换:
+           绑定点击监听
+           异步请求更新状态
+    
+    4). 进入详情界面
+        memoryUtils.product = product
+        history.push('/product/detail')
+    5). 进入添加界面
+        memoryUtils.product = null
+        history.push('/product/addupdate')
+    6). 进入修改界面
+        memoryUtils.product = product
+        history.push('/product/addupdate')
+
+## 2. ProductDetail组件
+    1). 读取商品数据: memoryUtils.product
+    2). 显示商品信息: <Card> / List 
+    3). 异步显示商品所属分类的名称
+
+## 3. ProductAddUpdate
+    1). 基本界面
+        Card / Form / Input / TextArea / Button
+        FormItem的label标题和layout
+    2). 分类下拉列表的异步显示
+    3). 表单数据收集与表单验证
+
+## 4. PicturesWall
+    1). antd组件
+        Upload / Modal / Icon
+        根据示例DEMO改造编写
+    2). 上传图片
+        在<Upload >上配置接口的path和请求参数名
+        监视文件状态的改变: 上传中 / 上传完成/ 删除
+        在上传成功时, 保存好相关信息: name / url
+        为父组件提供获取已上传图片文件名数组的方法
+    3). 删除图片
+        当文件状态变为删除时, 调用删除图片的接口删除上传到后台的图片
+    4). 父组件调用子组件对象的方法: 使用ref技术
+        a. 创建ref容器: thi.pw = React.createRef()
+        b. 将ref容器交给需要获取的标签元素: <PicturesWall ref={this.pw} />  
+        c. 通过ref容器读取标签元素: this.pw.current
+
