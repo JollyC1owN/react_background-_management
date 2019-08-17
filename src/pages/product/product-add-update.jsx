@@ -68,6 +68,16 @@ class ProductAddUpdate extends Component {
       }
     })
   }
+
+  // 价格限制
+  validatePrice = (rule, value, callback) => {
+    if (value < 0) {
+      callback('价格不能小于0')
+    } else {
+      callback()
+    }
+  }
+
   // 发送请求，请求所有分类
   componentDidMount() {
     this.getCategory()
@@ -125,7 +135,8 @@ class ProductAddUpdate extends Component {
             {getFieldDecorator("price", {
               initialValue: this.product.price,
               rules: [
-                { required: true, message: "必须输入商品价格" }
+                { required: true, message: "必须输入商品价格" },
+                {validator: this.validatePrice}
               ]
             })( //addonAfter：在input框后面加一个小块块，具体看效果就懂了
               <Input type="number" placeholder="商品价格" addonAfter="元"></Input>

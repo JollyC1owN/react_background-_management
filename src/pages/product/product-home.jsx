@@ -8,6 +8,7 @@ import LinkButton from "../../components/link-button"
 import { reqProducts, reqSearchProducts, reqUpdateStatus } from '../../api';
 import { PAGR_SIZE } from '../../utils/constants';
 import memoryUtils from "../../utils/memoryUtils"
+import _ from "lodash"
 const Option = Select.Option
 
 
@@ -19,7 +20,7 @@ export default class ProductHome extends Component {
     searchType: "productName",  //默认是按商品名称搜索
     searchName: ""
   }
-  updateStatus = async (productId, status) => {
+  updateStatus = _.throttle(async (productId, status) => {
     // 计算更新后的值
     status = status === 1 ? 2 : 1
     // 请求更新
@@ -29,7 +30,8 @@ export default class ProductHome extends Component {
     }
     // 让当前页显示
     this.getProducts(this.pageNum)
-  }
+  }, 2000, {trailing:false})
+
   initColumns = () => {
     this.columns = [
       {
@@ -90,11 +92,11 @@ export default class ProductHome extends Component {
     this.setState({ loading: true })
     const { searchName, searchType } = this.state
     let result
-    if (!searchName) {
+    if (searchName && this.isSearch) {
+      result = await reqSearchProducts({ pageNum, pageSize: PAGR_SIZE, searchName, searchType })
+    } else {
       //发送请求获取数据 
       result = await reqProducts(pageNum, PAGR_SIZE)
-    } else {
-      result = await reqSearchProducts({ pageNum, pageSize: PAGR_SIZE, searchName, searchType })
     }
     this.setState({ loading: false })
     if (result.status === 0) {
@@ -129,7 +131,11 @@ export default class ProductHome extends Component {
           placeholder="输入关键字" value={searchName}
           onChange={(event) => this.setState({ searchName: event.target.value })}
         />
-        <Button type="primary" onClick={() => this.getProducts(1)}>搜索</Button>
+        <Button type="primary" onClick={() => { 
+          this.isSearch = true
+          this.getProducts(1)
+        }
+        }>搜索</Button>
       </span>
     )
     const extra = (
