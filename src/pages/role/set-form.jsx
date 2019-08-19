@@ -19,13 +19,15 @@ export default class UpdateRole extends React.Component {
 		return this.state.checkedKeys
 	}
 
-	// 在组件将要挂载的时候获取到父组件传来的数据，并且更新状态
+	// // 在组件将要挂载的时候获取到父组件传来的数据，并且更新状态
 	componentWillMount() {
 		const menus = this.props.role.menus
 		this.setState({
 			checkedKeys:menus
 		})
 	}
+
+
 	//在props属性的值发生变化的时候，触发声明周期的事件
 	componentWillReceiveProps(nextProps) {
 		//拿到最新的数据并且更新状态
@@ -33,6 +35,8 @@ export default class UpdateRole extends React.Component {
 		this.setState({
 			checkedKeys:menus
 		})
+		console.log(2222222);
+		
 	}
 	
 	handleCheck = (checkedKeys) => { 

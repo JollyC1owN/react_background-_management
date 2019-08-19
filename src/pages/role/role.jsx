@@ -57,7 +57,7 @@ export default class Role extends Component {
       },
       {
         title: '操作',
-                                      //在点击里面的函数的形参不要传role！！！！！！内部自动传入              
+                                      //在点击里面的函数的形参不要传role！！！！！！           
         render: (role) => <LinkButton onClick={() => this.showRoles(role)}>设置权限</LinkButton>
       },
     ]
